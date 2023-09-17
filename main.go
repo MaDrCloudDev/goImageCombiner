@@ -106,3 +106,4 @@ func saveImage(path string, img image.Image) {
 
 // go build -o imagecombiner
 // ./imagecombiner images/image1.png images/image2.png output.png
+// ./imagecombiner images/image3.png images/image4.png output.png
