@@ -6,6 +6,7 @@ import (
 	"image/color"
 	"image/png"
 	"os"
+	"path/filepath"
 )
 
 type Args struct {
@@ -16,7 +17,7 @@ type Args struct {
 
 func NewArgs() *Args {
 	if len(os.Args) < 4 {
-		fmt.Println("Not enough arguments. Usage: program <image1_path> <image2_path> <output_path>")
+		fmt.Println("Not enough arguments. Usage: program <image1_path> <image2_path> <output_filename>")
 		os.Exit(1)
 	}
 
@@ -36,7 +37,9 @@ func main() {
 
 	imgCombined := combineImages(img1, img2)
 
-	saveImage(args.OutputPath, imgCombined)
+	outputPath := filepath.Join("images", args.OutputPath)
+
+	saveImage(outputPath, imgCombined)
 }
 
 func loadImage(path string) image.Image {
@@ -60,7 +63,6 @@ func combineImages(img1, img2 image.Image) image.Image {
 	bounds1 := img1.Bounds()
 	bounds2 := img2.Bounds()
 
-	// Find the smaller dimensions
 	minWidth := bounds1.Dx()
 	if bounds2.Dx() < minWidth {
 		minWidth = bounds2.Dx()
@@ -100,3 +102,7 @@ func saveImage(path string, img image.Image) {
 		os.Exit(1)
 	}
 }
+
+
+// go build -o imagecombiner
+// ./imagecombiner images/image1.png images/image2.png output.png
