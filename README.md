@@ -1,4 +1,4 @@
-# go_image_combiner
+# goImageCombiner
 
 Build the program:
 ```
