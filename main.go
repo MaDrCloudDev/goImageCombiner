@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"image"
-	"image/color"
 	"image/png"
 	"os"
 	"path/filepath"
@@ -45,7 +44,7 @@ func main() {
 func loadImage(path string) image.Image {
 	file, err := os.Open(path)
 	if err != nil {
-		fmt.Printf("Error opening image file: %v\n", err)
+		fmt.Printf("Error opening image: %v\n", err)
 		os.Exit(1)
 	}
 	defer file.Close()
@@ -76,12 +75,12 @@ func combineImages(img1, img2 image.Image) image.Image {
 	combined := image.NewRGBA(image.Rect(0, 0, minWidth, minHeight))
 
 	for y := 0; y < minHeight; y++ {
-		for x := 0; x < minWidth; x += 2 {
-			col1 := color.RGBAModel.Convert(img1.At(x, y)).(color.RGBA)
-			col2 := color.RGBAModel.Convert(img2.At(x, y)).(color.RGBA)
-
-			combined.Set(x, y, col1)
-			combined.Set(x+1, y, col2)
+		for x := 0; x < minWidth; x++ {
+			if x%2 == 0 {
+				combined.Set(x, y, img1.At(x, y))
+			} else {
+				combined.Set(x, y, img2.At(x, y))
+			}
 		}
 	}
 
@@ -91,7 +90,7 @@ func combineImages(img1, img2 image.Image) image.Image {
 func saveImage(path string, img image.Image) {
 	file, err := os.Create(path)
 	if err != nil {
-		fmt.Printf("Error creating output image file: %v\n", err)
+		fmt.Printf("Error combining images: %v\n", err)
 		os.Exit(1)
 	}
 	defer file.Close()
@@ -102,8 +101,3 @@ func saveImage(path string, img image.Image) {
 		os.Exit(1)
 	}
 }
-
-
-// go build -o imagecombiner
-// ./imagecombiner images/image1.png images/image2.png output.png
-// ./imagecombiner images/image3.png images/image4.png output.png
